@@ -1,0 +1,3 @@
+# Fichier requirements.txt pour solve_ivp_pint.py
+scipy
+pint
