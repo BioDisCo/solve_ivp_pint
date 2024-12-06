@@ -1,3 +1,4 @@
+import pint
 import scipy.integrate
 
 
@@ -41,7 +42,7 @@ def factory(model, t_span0, x_0, ureg):
     return f_no_units, x0_no_units, t_span_no_units
 
 
-def solve_ivp(fun, t_span , y0, method='RK45', t_eval=None, dense_output=False, events=None, vectorized=False, args=None, **options) :  # noqa: FBT002
+def solve_ivp(fun, t_span , y0, *, method='RK45', t_eval=None, dense_output=False, events=None, vectorized=False, args=None, **options) :
     # Vérification du type de t_span
     if not isinstance(t_span, (list, tuple)):
         msg = f"Expected t_span to be of type list or tuple, but got {type(t_span).__name__}"
@@ -78,10 +79,10 @@ def solve_ivp(fun, t_span , y0, method='RK45', t_eval=None, dense_output=False, 
             if not t_eval.check(t_span_unit):
                 # Conversion de t_eval pour qu'il ait les mêmes unités que t_span
                 t_eval = t_eval.to(t_span_unit)
-        except Exception as e:
+        except pint.errors.DimensionalityError as e:
             # Lève une erreur explicite si la conversion échoue
             msg = f"Failed to convert units of t_eval to match t_span. Error: {e}, please check the unit of t_eval, it should be the same as t_span"
-            raise ValueError(msg)
+            raise ValueError(msg) from e
 
         t_eval = t_eval.magnitude  # Convert to values without units
 
