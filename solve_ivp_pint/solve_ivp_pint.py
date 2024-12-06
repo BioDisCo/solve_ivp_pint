@@ -6,15 +6,15 @@ def factory(model, t_span0, x_0, ureg):
     # Delete t_span0 and x_0 units (if any)
     x0_no_units = [item.magnitude for item in x_0]
 
-    # Gérer t_span0
-    if hasattr(t_span0, "magnitude"):  # t_span0 est une quantité unique
-        t_span_no_units = tuple(t_span0.magnitude)  # Convertir en tuple
-        t_span_units = t_span0.units  # Extraire l'unité
-    elif isinstance(t_span0, (list, tuple)):  # t_span0 est un tuple ou une liste
+    # Do deal with t_span0
+    if hasattr(t_span0, "magnitude"):  # t_span0 is a unique quantity
+        t_span_no_units = tuple(t_span0.magnitude)  # Convert to tuple
+        t_span_units = t_span0.units  # Get the unit
+    elif isinstance(t_span0, (list, tuple)):  # t_span0 is a tuple or a list
         t_span_no_units = tuple(item.magnitude if hasattr(item, "magnitude") else item for item in t_span0)
-        # Vérifier que les deux éléments ont la même unité
+        # Check that the 2 elements have the same unit
         if all(hasattr(item, "units") for item in t_span0):
-            t_span_units = t_span0[0].units  # Prendre l'unité du premier élément
+            t_span_units = t_span0[0].units  # Take the first element unit
             if not all(item.units == t_span_units for item in t_span0):
                 msg = "All elements in t_span0 must have the same units."
                 raise ValueError(msg)
@@ -43,25 +43,24 @@ def factory(model, t_span0, x_0, ureg):
 
 
 def solve_ivp(fun, t_span , y0, *, method='RK45', t_eval=None, dense_output=False, events=None, vectorized=False, args=None, **options) :
-    # Vérification du type de t_span
+    # Check of t_span's type
     if not isinstance(t_span, (list, tuple)):
         msg = f"Expected t_span to be of type list or tuple, but got {type(t_span).__name__}"
         raise TypeError(msg)
-    # Vérification de la longueur
+    # Check of the length
     nb_list = 2
     if len(t_span) != nb_list :
         msg = f"Expected t_span to contain exactly two elements, but got {len(t_span)}"
         raise ValueError(msg)
 
-    # Vérification que chaque élément de t_span a un attribut '_REGISTRY'
+    # Check that each t_span's element has an attribut '_REGISTRY'
     for i, t in enumerate(t_span):
         if not hasattr(t, "_REGISTRY"):
             msg = f"The element t_span[{i}] ({t}) does not have a '_REGISTRY' attribute. Ensure it has units."
             raise TypeError(msg)
 
-    #: list | tuple -> Besoin de télécharger python 3.12 d'abord
     retrieved_ureg = t_span[0]._REGISTRY  # noqa: SLF001
-    # Vérification des options non supportées
+    # Verification of "options" that are not supported yet
     if options:  # If the dictionnary is not empty
         msg = "The function has not yet been implemented for the additional options provided: {}".format(", ".join(options.keys()))
         raise NotImplementedError(msg)
@@ -71,16 +70,16 @@ def solve_ivp(fun, t_span , y0, *, method='RK45', t_eval=None, dense_output=Fals
 
     # Management of t_eval: check if non None and that with t_span they have the same units (otherwise conversion), and then conversion without units
     if t_eval is not None and hasattr(t_eval, "dimensionality") and t_eval.dimensionality:
-        # Récupération des unités de t_span
+        # To get the units of t_span
         t_span_unit = t_span[0].units
-        # Vérification de la compatibilité des unités entre t_eval et t_span
+        # Verification of the compatibility between t_eval & t_span
         try:
-            # Vérification de la compatibilité des unités entre t_eval et t_span
+            # Check the compatibility between t_eval & t_span
             if not t_eval.check(t_span_unit):
-                # Conversion de t_eval pour qu'il ait les mêmes unités que t_span
+                # Convertion of t_eval to have the same units as t_span
                 t_eval = t_eval.to(t_span_unit)
         except pint.errors.DimensionalityError as e:
-            # Lève une erreur explicite si la conversion échoue
+            # Will give an explicit pint error if the conversion fails
             msg = f"Failed to convert units of t_eval to match t_span. Error: {e}, please check the unit of t_eval, it should be the same as t_span"
             raise ValueError(msg) from e
 
