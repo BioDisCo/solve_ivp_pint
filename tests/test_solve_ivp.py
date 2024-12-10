@@ -17,12 +17,10 @@ def test_solve_ivp():
     tf = 1 * ureg.seconds  # final time
     y0 = 0 * ureg.meters  # initial condition
 
-    # Résolution
+    # Solving
     solution = solve_ivp(equation, [t0, tf], [y0])
 
-    # Vérifications
+    # Verifications
     assert solution.success, "Solving failed"
     assert len(solution.t) > 0, "Solution do not contain any time"
     assert len(solution.y[0]) > 0, "Solution do not contain any y value"
-
-    # Ajouter les badges dans Readme sur Github
