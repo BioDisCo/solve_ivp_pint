@@ -38,18 +38,29 @@ def factory(model, t_span0, x_0, ureg):
             for term, ref in zip(dxdt_with_units, x_0)
         ]
 
-
     return f_no_units, x0_no_units, t_span_no_units
 
 
-def solve_ivp(fun, t_span , y0, *, method='RK45', t_eval=None, dense_output=False, events=None, vectorized=False, args=None, **options) :
+def solve_ivp(
+    fun,
+    t_span,
+    y0,
+    *,
+    method="RK45",
+    t_eval=None,
+    dense_output=False,
+    events=None,
+    vectorized=False,
+    args=None,
+    **options,
+):
     # Check of t_span's type
     if not isinstance(t_span, (list, tuple)):
         msg = f"Expected t_span to be of type list or tuple, but got {type(t_span).__name__}"
         raise TypeError(msg)
     # Check of the length
     nb_list = 2
-    if len(t_span) != nb_list :
+    if len(t_span) != nb_list:
         msg = f"Expected t_span to contain exactly two elements, but got {len(t_span)}"
         raise ValueError(msg)
 
@@ -62,9 +73,10 @@ def solve_ivp(fun, t_span , y0, *, method='RK45', t_eval=None, dense_output=Fals
     retrieved_ureg = t_span[0]._REGISTRY  # noqa: SLF001
     # Verification of "options" that are not supported yet
     if options:  # If the dictionnary is not empty
-        msg = "The function has not yet been implemented for the additional options provided: {}".format(", ".join(options.keys()))
+        msg = "The function has not yet been implemented for the additional options provided: {}".format(
+            ", ".join(options.keys())
+        )
         raise NotImplementedError(msg)
-
 
     f_no_units, x0_no_units, t_span_no_units = factory(fun, t_span, y0, retrieved_ureg)
 
@@ -86,7 +98,18 @@ def solve_ivp(fun, t_span , y0, *, method='RK45', t_eval=None, dense_output=Fals
         t_eval = t_eval.magnitude  # Convert to values without units
 
     # Calling 'solve_ivp' to solve ODEs
-    solution_sys = scipy.integrate.solve_ivp(f_no_units, t_span_no_units, x0_no_units, method=method , t_eval=t_eval, dense_output=dense_output, events=events, vectorized=vectorized, args=args, **options)
+    solution_sys = scipy.integrate.solve_ivp(
+        f_no_units,
+        t_span_no_units,
+        x0_no_units,
+        method=method,
+        t_eval=t_eval,
+        dense_output=dense_output,
+        events=events,
+        vectorized=vectorized,
+        args=args,
+        **options,
+    )
 
     # Checking for simulation errors
     if not solution_sys.success:

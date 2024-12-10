@@ -4,6 +4,7 @@ from solve_ivp_pint import solve_ivp
 
 ureg = UnitRegistry()
 
+
 def test_solve_ivp():
     # Définir l'équation différentielle
     def equation(t, y):  # noqa: ARG001
