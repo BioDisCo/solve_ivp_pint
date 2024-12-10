@@ -25,4 +25,4 @@ def test_solve_ivp():
     assert len(solution.t) > 0, "Solution do not contain any time"
     assert len(solution.y[0]) > 0, "Solution do not contain any y value"
 
-    #Ajouter les badges dans Readme sur Github
+    # Ajouter les badges dans Readme sur Github
