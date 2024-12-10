@@ -19,7 +19,7 @@ maintainers = [
 ]
 description = "ODE solver processing pint (using 'solve_ivp' function)"
 readme = "README.md"
-license = { file = "LICENSE" } #Do I need one ? If so, which one ? Apache ?
+license = { file = "LICENSE" }
 keywords = ["ODE solver", "pint", "solve_ivp"]
 classifiers = [
   "Development Status :: 4 - Beta",
