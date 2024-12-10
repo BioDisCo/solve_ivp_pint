@@ -51,6 +51,9 @@ line-length = 120
 docstring-code-format = true
 docstring-code-line-length = 80
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]  # Répertoire où chercher les tests
+
 [tool.ruff.lint]
 select = [
   "A001",
