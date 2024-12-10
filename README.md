@@ -1,8 +1,8 @@
 # solve_ivp_pint
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
-[![static analysis workflow](https://github.com/BioDisCo/python-template/actions/workflows/static-analysis.yaml/badge.svg)](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/static-analysis.yaml/)
-[![test workflow](https://github.com/BioDisCo/python-template/actions/workflows/test.yaml/badge.svg)](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/test.yaml/)
+[![static analysis workflow](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/static-analysis.yaml/badge.svg)](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/static-analysis.yaml/)
+[![test workflow](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/test.yaml/badge.svg)](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/test.yaml/)
 
 
 This is the solve_ivp_pint library.
