@@ -25,10 +25,10 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
 ]
-dependencies = ["scipy", "pint"] 
+dependencies = ["scipy", "pint"]
 
 [project.urls]
-Repository = "https://github.com/Alex-lmf/Code_PhD/tree/2e04ed4c8b434398cda96e6c8eb19f16bbc59e07/solve_ivp"
+Repository = "https://github.com/BioDisCo/solve_ivp_pint/"
 
 [tool.hatch.version]
 source = "vcs"
@@ -37,7 +37,9 @@ source = "vcs"
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["solve_ivp_pint"] #If the name of the python file containing the code change, it will need to be changed to 
+packages = [
+  "solve_ivp_pint",
+] #If the name of the python file containing the code change, it will need to be changed to 
 
 
 [tool.pyright]
@@ -52,7 +54,7 @@ docstring-code-format = true
 docstring-code-line-length = 80
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]  # Répertoire où chercher les tests
+testpaths = ["tests"] # Répertoire où chercher les tests
 
 [tool.ruff.lint]
 select = [
@@ -583,3 +585,4 @@ ban-relative-imports = "all"
 [tool.ruff.lint.flake8-pytest-style]
 fixture-parentheses = false
 mark-parentheses = false
+
