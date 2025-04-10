@@ -5,6 +5,7 @@ import scipy.integrate
 def factory(model, t_span0, x_0, ureg):
     # Delete t_span0 and x_0 units (if any)
     x0_no_units = [item.magnitude for item in x_0]
+    x0_units = [item.units for item in x_0]
 
     # Do deal with t_span0
     if hasattr(t_span0, "magnitude"):  # t_span0 is a unique quantity
@@ -38,7 +39,7 @@ def factory(model, t_span0, x_0, ureg):
             for term, ref in zip(dxdt_with_units, x_0)
         ]
 
-    return f_no_units, x0_no_units, t_span_no_units
+    return f_no_units, x0_no_units, t_span_no_units, t_span_units, x0_units
 
 
 def solve_ivp(
@@ -70,7 +71,7 @@ def solve_ivp(
             msg = f"The element t_span[{i}] ({t}) does not have a '_REGISTRY' attribute. Ensure it has units."
             raise TypeError(msg)
 
-    retrieved_ureg = t_span[0]._REGISTRY  # noqa: SLF001
+    ureg = t_span[0]._REGISTRY  # noqa: SLF001
     # Verification of "options" that are not supported yet
     if options:  # If the dictionnary is not empty
         msg = "The function has not yet been implemented for the additional options provided: {}".format(
@@ -78,18 +79,16 @@ def solve_ivp(
         )
         raise NotImplementedError(msg)
 
-    f_no_units, x0_no_units, t_span_no_units = factory(fun, t_span, y0, retrieved_ureg)
+    f_no_units, x0_no_units, t_span_no_units, t_span_units, x0_units = factory(fun, t_span, y0, ureg)
 
     # Management of t_eval: check if non None and that with t_span they have the same units (otherwise conversion), and then conversion without units
     if t_eval is not None and hasattr(t_eval, "dimensionality") and t_eval.dimensionality:
-        # To get the units of t_span
-        t_span_unit = t_span[0].units
         # Verification of the compatibility between t_eval & t_span
         try:
             # Check the compatibility between t_eval & t_span
-            if not t_eval.check(t_span_unit):
+            if not t_eval.check(t_span_units):
                 # Convertion of t_eval to have the same units as t_span
-                t_eval = t_eval.to(t_span_unit)
+                t_eval = t_eval.to(t_span_units)
         except pint.errors.DimensionalityError as e:
             # Will give an explicit pint error if the conversion fails
             msg = f"Failed to convert units of t_eval to match t_span. Error: {e}, please check the unit of t_eval, it should be the same as t_span"
@@ -115,5 +114,9 @@ def solve_ivp(
     if not solution_sys.success:
         msg = "The simulation failed to converge."
         raise RuntimeError(msg)
+
+    # Add units back in to solution
+    solution_sys.t = [time * t_span_units for time in solution_sys.t]
+    solution_sys.y = [[val * unit for val in vals] for vals, unit in zip(solution_sys.y, x0_units)]
 
     return solution_sys
