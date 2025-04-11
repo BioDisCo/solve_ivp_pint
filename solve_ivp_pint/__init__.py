@@ -1,4 +1,4 @@
-"""solve_ivp_pint : ODE solver using units with Pint"""
+"""solve_ivp_pint : ODE solver using units with Pint."""
 
 from solve_ivp_pint.solve_ivp_pint import solve_ivp
 
