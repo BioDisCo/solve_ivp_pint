@@ -57,12 +57,12 @@ def solve_ivp(  # noqa: PLR0913
     t_span: list[Quantity] | tuple[Quantity],
     y0: list[Quantity] | tuple[Quantity],
     *,
-    method: str="RK45",
+    method: str = "RK45",
     t_eval: Quantity | None = None,
-    dense_output: bool=False,
-    events: Callable | list[Callable] | None=None,
-    vectorized: bool=False,
-    args: tuple | None =None,
+    dense_output: bool = False,
+    events: Callable | list[Callable] | None = None,
+    vectorized: bool = False,
+    args: tuple | None = None,
     **options,  # noqa: ANN003
 ) -> OptimizeResult:
     """A solve_ivp function with pint units."""
@@ -99,7 +99,7 @@ def solve_ivp(  # noqa: PLR0913
             # Check the compatibility between t_eval & t_span
             if not t_eval.check(t_span_units):
                 # Conversion of t_eval to have the same units as t_span
-                t_eval = t_eval.to(t_span_units) # type: ignore
+                t_eval = t_eval.to(t_span_units)  # type: ignore
         except pint.errors.DimensionalityError as e:
             # Will give an explicit pint error if the conversion fails
             msg = f"Failed to convert units of t_eval to match t_span. Error: {e}, please check the unit of t_eval, it should be the same as t_span"
