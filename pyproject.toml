@@ -25,7 +25,7 @@ classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
 ]
-dependencies = ["scipy", "pint"]
+dependencies = ["scipy", "pint", "numpy"]
 
 [project.urls]
 Repository = "https://github.com/BioDisCo/solve_ivp_pint/"
@@ -40,7 +40,6 @@ allow-direct-references = true
 packages = [
   "solve_ivp_pint",
 ] #If the name of the python file containing the code change, it will need to be changed to 
-
 
 [tool.pyright]
 venvPath = "."
