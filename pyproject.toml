@@ -44,7 +44,7 @@ packages = [
 
 [tool.pyright]
 venvPath = "."
-venv = ".venv"
+venv = "venv"
 
 [tool.ruff]
 line-length = 120
