@@ -1,14 +1,21 @@
+"""Integration library with units."""
+
+from collections.abc import Callable, Sequence
+
 import pint
 import scipy.integrate
+from pint import Quantity, UnitRegistry
 
 
-def factory(model, t_span0, x_0, ureg):
+def factory(
+    model, t_span0: Quantity | list[Quantity] | tuple[Quantity], x_0: Sequence[Quantity], ureg: UnitRegistry
+) -> tuple:
     # Delete t_span0 and x_0 units (if any)
     x0_no_units = [item.magnitude for item in x_0]
     x0_units = [item.units for item in x_0]
 
     # Do deal with t_span0
-    if hasattr(t_span0, "magnitude"):  # t_span0 is a unique quantity
+    if isinstance(t_span0, Quantity):
         t_span_no_units = tuple(t_span0.magnitude)  # Convert to tuple
         t_span_units = t_span0.units  # Get the unit
     elif isinstance(t_span0, (list, tuple)):  # t_span0 is a tuple or a list
@@ -27,7 +34,7 @@ def factory(model, t_span0, x_0, ureg):
         raise TypeError(msg)
 
     # Defines f_no_units as a closure
-    def f_no_units(t, x, *args):
+    def f_no_units(t, x, *args) -> list:
         # Use the captured x_0 and t_span0
         x_units = [val * ureg.Unit(str(ref.units)) for val, ref in zip(x, x_0)]
 
@@ -43,11 +50,11 @@ def factory(model, t_span0, x_0, ureg):
 
 
 def solve_ivp(
-    fun,
-    t_span,
+    fun: Callable,
+    t_span: list[Quantity] | tuple[Quantity],
     y0,
     *,
-    method="RK45",
+    method: str="RK45",
     t_eval=None,
     dense_output=False,
     events=None,
@@ -55,6 +62,7 @@ def solve_ivp(
     args=None,
     **options,
 ):
+    """A solve_ivp function with pint units."""
     # Check of t_span's type
     if not isinstance(t_span, (list, tuple)):
         msg = f"Expected t_span to be of type list or tuple, but got {type(t_span).__name__}"
@@ -73,7 +81,7 @@ def solve_ivp(
 
     ureg = t_span[0]._REGISTRY  # noqa: SLF001
     # Verification of "options" that are not supported yet
-    if options:  # If the dictionnary is not empty
+    if options:  # If the dictionary is not empty
         msg = "The function has not yet been implemented for the additional options provided: {}".format(
             ", ".join(options.keys())
         )
@@ -87,7 +95,7 @@ def solve_ivp(
         try:
             # Check the compatibility between t_eval & t_span
             if not t_eval.check(t_span_units):
-                # Convertion of t_eval to have the same units as t_span
+                # Conversion of t_eval to have the same units as t_span
                 t_eval = t_eval.to(t_span_units)
         except pint.errors.DimensionalityError as e:
             # Will give an explicit pint error if the conversion fails
