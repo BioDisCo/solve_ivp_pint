@@ -1,16 +1,20 @@
-from pint import UnitRegistry
+"""The tests."""
+
+from pint import Quantity, UnitRegistry
 
 from solve_ivp_pint import solve_ivp
 
 ureg = UnitRegistry()
 
 
-def test_solve_ivp():
+def test_solve_ivp() -> None:
+    """Simple test."""
+
     # Define the ODE
-    def equation(t, y):  # noqa: ARG001
+    def equation(t: Quantity, y: Quantity) -> list:  # noqa: ARG001
         a = 1 * ureg.seconds**-1
         b = 2 * ureg.meters / ureg.seconds
-        sol = 0 - a * y[0] - b
+        sol = 0 - a * y[0] - b  # type: ignore
         return [sol]
 
     t0 = 0 * ureg.seconds  # initial time

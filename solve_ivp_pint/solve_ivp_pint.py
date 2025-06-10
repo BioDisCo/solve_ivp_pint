@@ -92,7 +92,8 @@ def solve_ivp(  # noqa: PLR0913
 
     f_no_units, x0_no_units, t_span_no_units, t_span_units, x0_units = factory(fun, t_span, y0, ureg)
 
-    # Management of t_eval: check if non None and that with t_span they have the same units (otherwise conversion), and then conversion without units
+    # Management of t_eval: check if non None and that with t_span they have the same units
+    # (otherwise conversion), and then conversion without units
     if t_eval is not None and hasattr(t_eval, "dimensionality") and t_eval.dimensionality:
         # Verification of the compatibility between t_eval & t_span
         try:
@@ -102,7 +103,10 @@ def solve_ivp(  # noqa: PLR0913
                 t_eval = t_eval.to(t_span_units)  # type: ignore
         except pint.errors.DimensionalityError as e:
             # Will give an explicit pint error if the conversion fails
-            msg = f"Failed to convert units of t_eval to match t_span. Error: {e}, please check the unit of t_eval, it should be the same as t_span"
+            msg = (
+                "Failed to convert units of t_eval to match t_span."
+                f"Error: {e}, please check the unit of t_eval, it should be the same as t_span"
+            )
             raise ValueError(msg) from e
 
         t_eval = t_eval.magnitude  # type: ignore # Convert to values without units
