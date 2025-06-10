@@ -26,5 +26,5 @@ def test_solve_ivp() -> None:
 
     # Verifications
     assert solution.success, "Solving failed"
-    assert len(solution.t) > 0, "Solution do not contain any time"
-    assert len(solution.y[0]) > 0, "Solution do not contain any y value"
+    assert len(solution.t) > 0, "Solution does not contain any time"
+    assert len(solution.y[0]) > 0, "Solution does not contain any y value"
