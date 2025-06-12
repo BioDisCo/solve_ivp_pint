@@ -1,4 +1,4 @@
-# solve_ivp_pint
+# solve_ivp_pint: ODE solver with unit support using Pint 
 
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
 [![static analysis workflow](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/static-analysis.yaml/badge.svg)](https://github.com/BioDisCo/solve_ivp_pint/actions/workflows/static-analysis.yaml/)
