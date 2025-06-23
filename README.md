@@ -8,7 +8,7 @@
 
 If you love typing and units as we do, but need to resort to integration, this library may be for you.
 
-The solve_ivp_pint library allows you to use the “solve_ivp” ODE solver from the “scipy.integrate” library, while using the “Pint” library to assign units to its variables.
+The solve_ivp_pint library allows you to use the `solve_ivp` ODE solver from the `scipy.integrate` library, while using the `Pint` library to assign units to its variables.
 
 
 ## Install
@@ -23,7 +23,7 @@ pip install solve_ivp_pint
 
 ## Use
 
-This library's “solve_ivp” function has the same structure as the one in the “scipy.integrate” library:
+This library's `solve_ivp` function has the same structure as the one in the `scipy.integrate` library:
  
 ```python
 solve_ivp(fun, t_span, y0, method='RK45', t_eval=None, dense_output=False, events=None, vectorized=False, args=None, **options)
