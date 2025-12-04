@@ -51,6 +51,24 @@ def test_linear() -> None:
     assert solution.y[0][-1] == 1 * u.m
 
 
+def test_linear_teval() -> None:
+    """Linear model with t_eval parameter."""
+
+    # Define the ODE
+    def dxdt(t: Quantity, y: Quantity) -> list:  # noqa: ARG001
+        return [0.1 * u.m / u.s]
+
+    t0 = 0 * u.seconds  # initial time
+    tf = 10 * u.seconds  # final time
+    y0 = 0 * u.meters  # initial condition
+
+    # Solving
+    solution = solve_ivp(dxdt, [t0, tf], [y0], t_eval=np.linspace(0, 10, 100) * u.s)
+
+    assert solution.t[-1] == tf
+    assert solution.y[0][-1] == 1 * u.m
+
+
 def test_ball() -> None:
     """Test fot throwing a ball."""
 
