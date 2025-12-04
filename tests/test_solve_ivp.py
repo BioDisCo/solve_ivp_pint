@@ -2,6 +2,7 @@
 
 import numpy as np
 from pint import Quantity, UnitRegistry
+import pytest
 
 from solve_ivp_pint import solve_ivp
 
@@ -51,8 +52,8 @@ def test_linear() -> None:
     assert solution.y[0][-1] == 1 * u.m
 
 
-def test_linear_teval() -> None:
-    """Linear model with t_eval parameter."""
+def test_linear_teval_unit_outside() -> None:
+    """Linear model with t_eval parameter, where the sequence has a unit."""
 
     # Define the ODE
     def dxdt(t: Quantity, y: Quantity) -> list:  # noqa: ARG001
@@ -66,7 +67,26 @@ def test_linear_teval() -> None:
     solution = solve_ivp(dxdt, [t0, tf], [y0], t_eval=np.linspace(0, 10, 100) * u.s)
 
     assert solution.t[-1] == tf
-    assert solution.y[0][-1] == 1 * u.m
+    assert solution.y[0][-1].to("meter").magnitude == pytest.approx(1)
+
+
+def test_linear_teval_unit_inside() -> None:
+    """Linear model with t_eval parameter where each entry has a unit."""
+
+    # Define the ODE
+    def dxdt(t: Quantity, y: Quantity) -> list:  # noqa: ARG001
+        return [0.1 * u.m / u.s]
+
+    t0 = 0 * u.seconds  # initial time
+    tf = 10 * u.seconds  # final time
+    y0 = 0 * u.meters  # initial condition
+
+    # Solving
+    solution = solve_ivp(dxdt, [t0, tf], [y0], t_eval=[0 * u.s, 10*u.s])
+
+    assert solution.t[-1] == tf
+    assert solution.y[0][-1].to("meter").magnitude == pytest.approx(1)
+
 
 
 def test_ball() -> None:

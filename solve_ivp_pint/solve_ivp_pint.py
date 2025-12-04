@@ -58,7 +58,7 @@ def solve_ivp(  # noqa: PLR0913
     y0: list[Quantity] | tuple[Quantity],
     *,
     method: str = "RK45",
-    t_eval: Quantity | None = None,
+    t_eval: Quantity | list[Quantity] | None = None,
     dense_output: bool = False,
     events: Callable | list[Callable] | None = None,
     vectorized: bool = False,
@@ -94,7 +94,32 @@ def solve_ivp(  # noqa: PLR0913
 
     # Management of t_eval: check if non None and that with t_span they have the same units
     # (otherwise conversion), and then conversion without units
-    if t_eval is not None and hasattr(t_eval, "dimensionality") and t_eval.dimensionality:
+
+    # case: t_eval is not None and is a list or tuple of quantities with units
+    if t_eval is not None and isinstance(t_eval, (list, tuple)):
+        # Check that each element has an attribute '_REGISTRY'
+        for i, t in enumerate(t_eval):
+            if not hasattr(t, "_REGISTRY"):
+                msg = f"The element t_eval[{i}] ({t}) does not have a '_REGISTRY' attribute. Ensure it has units."
+                raise TypeError(msg)
+
+        # Verification of the compatibility between t_eval & t_span
+        try:
+            # Check the compatibility between t_eval & t_span
+            if not all(item.check(t_span_units) for item in t_eval):  # type: ignore
+                # Conversion of t_eval to have the same units as t_span
+                t_eval = [item.to(t_span_units) for item in t_eval]  # type: ignore
+        except pint.errors.DimensionalityError as e:
+            # Will give an explicit pint error if the conversion fails
+            msg = (
+                "Failed to convert units of t_eval to match t_span."
+                f"Error: {e}, please check the unit of t_eval, it should be the same as t_span"
+            )
+            raise ValueError(msg) from e
+
+        t_eval = [item.magnitude for item in t_eval]  # type: ignore # Convert to values without units
+
+    elif t_eval is not None and hasattr(t_eval, "dimensionality") and t_eval.dimensionality:
         # Verification of the compatibility between t_eval & t_span
         try:
             # Check the compatibility between t_eval & t_span
