@@ -52,7 +52,7 @@ def factory(
     return f_no_units, x0_no_units, t_span_no_units, t_span_units, x0_units
 
 
-def solve_ivp(  # noqa: PLR0913
+def solve_ivp(  # noqa: PLR0913, C901, PLR0912
     fun: Callable,
     t_span: list[Quantity] | tuple[Quantity],
     y0: list[Quantity] | tuple[Quantity],

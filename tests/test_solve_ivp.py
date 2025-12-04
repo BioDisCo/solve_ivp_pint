@@ -1,8 +1,8 @@
 """The tests."""
 
 import numpy as np
-from pint import Quantity, UnitRegistry
 import pytest
+from pint import Quantity, UnitRegistry
 
 from solve_ivp_pint import solve_ivp
 
@@ -82,11 +82,10 @@ def test_linear_teval_unit_inside() -> None:
     y0 = 0 * u.meters  # initial condition
 
     # Solving
-    solution = solve_ivp(dxdt, [t0, tf], [y0], t_eval=[0 * u.s, 10*u.s])
+    solution = solve_ivp(dxdt, [t0, tf], [y0], t_eval=[0 * u.s, 10 * u.s])
 
     assert solution.t[-1] == tf
     assert solution.y[0][-1].to("meter").magnitude == pytest.approx(1)
-
 
 
 def test_ball() -> None:
