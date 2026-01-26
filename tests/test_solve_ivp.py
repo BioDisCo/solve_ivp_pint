@@ -1,8 +1,8 @@
 """The tests."""
 
 import numpy as np
-from pint import Quantity, UnitRegistry
 import pytest
+from pint import Quantity, UnitRegistry
 
 from solve_ivp_pint import solve_ivp
 
