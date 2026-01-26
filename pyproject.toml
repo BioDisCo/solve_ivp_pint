@@ -41,10 +41,6 @@ packages = [
   "solve_ivp_pint",
 ] #If the name of the python file containing the code change, it will need to be changed to 
 
-[tool.pyright]
-venvPath = "."
-venv = "venv"
-
 [tool.ruff]
 line-length = 120
 
