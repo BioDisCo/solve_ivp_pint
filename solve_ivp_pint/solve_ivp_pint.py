@@ -51,6 +51,7 @@ def factory(
 
     return f_no_units, x0_no_units, t_span_no_units, t_span_units, x0_units
 
+
 # By default atol = 1e-6 & rtol = 1e-3 - cf https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html
 def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
     fun: Callable,
@@ -63,7 +64,7 @@ def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
     events: Callable | list[Callable] | None = None,
     vectorized: bool = False,
     atol: float | list | tuple | Quantity | list[Quantity] | tuple[Quantity] | None = 1e-6,
-    rtol: float | list| tuple | None = 1e-3,
+    rtol: float | list | tuple | None = 1e-3,
     args: tuple | None = None,
     **options,  # noqa: ANN003
 ) -> OptimizeResult:
@@ -134,10 +135,9 @@ def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
 
         t_eval = t_eval.magnitude  # type: ignore # Convert to values without units
 
-
-    #case: a_tol is not None and is a list/tuple of Quantity with units
+    # case: a_tol is not None and is a list/tuple of Quantity with units
     if atol is not None and isinstance(atol, (list | tuple)):
-        #Check first if we have a list or tuple with units or not
+        # Check first if we have a list or tuple with units or not
         has_units = any(hasattr(item, "_REGISTRY") for item in atol)
 
         if has_units:
@@ -178,11 +178,9 @@ def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
     elif atol is not None and isinstance(atol, Quantity) and atol.dimensionality:
         # Check if all y0 components have compatible dimensions
         first_unit = x0_units[0]
-        all_compatible = all(
-            atol.check(unit) for unit in x0_units
-        )
+        all_compatible = all(atol.check(unit) for unit in x0_units)
 
-        if all_compatible is False :
+        if all_compatible is False:
             msg = (
                 "When using a scalar atol with units, all components of y0 must have "
                 "compatible dimensions. Your y0 has heterogeneous units: "
@@ -211,10 +209,9 @@ def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
 
         atol = atol.magnitude  # type: ignore # Convert to values without units
 
-
     # case rtol is not None and is a Quantity, check if it's without units
     # case rtol is not None and is a list or tuple, check the length and if it's without any unit
-    if rtol is not None :
+    if rtol is not None:
         if isinstance(rtol, Quantity) and not rtol.dimensionless:
             msg = "rtol must be dimensionless"
             raise ValueError(msg)
@@ -229,7 +226,6 @@ def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
                 if isinstance(r, Quantity) and not r.dimensionless:
                     msg = f"All elements of rtol must be dimensionless. Element rtol[{i}] has units: {r.units}"
                     raise ValueError(msg)
-
 
     # Calling 'solve_ivp' to solve ODEs
     solution_sys = scipy.integrate.solve_ivp(
