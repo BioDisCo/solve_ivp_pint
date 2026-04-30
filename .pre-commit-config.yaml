@@ -11,3 +11,9 @@ repos:
     rev: v1.1.398
     hooks:
       - id: pyright
+        additional_dependencies:
+          - numpy
+          - scipy
+          - pint
+          - pytest
+          - matplotlib

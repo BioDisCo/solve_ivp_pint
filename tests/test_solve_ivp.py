@@ -88,6 +88,23 @@ def test_linear_teval_unit_inside() -> None:
     assert solution.y[0][-1].to("meter").magnitude == pytest.approx(1)
 
 
+def test_scalar_quantity_atol() -> None:
+    """Scalar Quantity atol must be broadcast to one magnitude per y0 component."""
+
+    def dxdt(t: Quantity, y: Quantity) -> list:  # noqa: ARG001
+        return [0.1 * u.m / u.s, 0.2 * u.m / u.s]
+
+    t0 = 0 * u.seconds
+    tf = 10 * u.seconds
+    y0 = [0 * u.meters, 0 * u.meters]
+
+    solution = solve_ivp(dxdt, [t0, tf], y0, atol=1e-8 * u.m)
+
+    assert solution.success
+    assert solution.y[0][-1].to("meter").magnitude == pytest.approx(1.0)
+    assert solution.y[1][-1].to("meter").magnitude == pytest.approx(2.0)
+
+
 def test_ball() -> None:
     """Test fot throwing a ball."""
 

@@ -207,8 +207,6 @@ def solve_ivp(  # noqa: C901, PLR0912, PLR0913, PLR0915
             )
             raise ValueError(msg) from e
 
-        atol = atol.magnitude  # type: ignore # Convert to values without units
-
     # case rtol is not None and is a Quantity, check if it's without units
     # case rtol is not None and is a list or tuple, check the length and if it's without any unit
     if rtol is not None:
